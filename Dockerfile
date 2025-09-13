@@ -25,7 +25,7 @@ RUN mkdir -p /var/www/html/public/uploads \
 # Set working dir
 WORKDIR /var/www/html
 
-# Install Composer
+# Install Composer //changes
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Install Laravel dependencies
