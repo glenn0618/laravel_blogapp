@@ -1,20 +1,19 @@
-# Use PHP with Composer
-FROM php:8.2-cli
+# Use official PHP with Apache
+FROM php:8.2-apache
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    unzip \
-    git \
-    libpq-dev \
-    libzip-dev \
-    zip \
-    && docker-php-ext-install pdo pdo_mysql bcmath zip
+    git unzip libpq-dev libzip-dev zip \
+    && docker-php-ext-install pdo pdo_mysql zip
+
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /app
+WORKDIR /var/www/html
 
 # Copy project files
 COPY . .
@@ -22,11 +21,11 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Permissions
-RUN chmod -R 777 storage bootstrap/cache
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose Render port
-EXPOSE 10000
+# Expose port 80
+EXPOSE 80
 
-# Start Laravel
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "10000"]
+# Start Apache
+CMD ["apache2-foreground"]
