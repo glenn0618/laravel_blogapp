@@ -16,6 +16,12 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 # Copy app code
 COPY . /var/www/html/
 
+# Create uploads folder and set permissions
+RUN mkdir -p /var/www/html/public/uploads \
+    && chown -R www-data:www-data /var/www/html/public/uploads \
+    && chmod -R 775 /var/www/html/public/uploads
+
+
 # Set working dir
 WORKDIR /var/www/html
 
