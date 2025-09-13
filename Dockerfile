@@ -28,8 +28,6 @@ RUN composer install --no-dev --optimize-autoloader
 # Set permissions for Laravel storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Cache Laravel configs
-RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
 # Expose Render's required port
 EXPOSE 10000
